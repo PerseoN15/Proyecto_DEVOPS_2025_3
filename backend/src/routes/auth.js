@@ -2,23 +2,33 @@ import { Router } from "express";
 
 const router = Router();
 
-// Ruta POST /api/login
+
+const VALID_USER = {
+  email: process.env.LOGIN_EMAIL || "admin@tec.com",
+  password: process.env.LOGIN_PASSWORD || "itsj"
+};
+
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  // Credenciales de ejemplo
-  const DEMO_EMAIL = "demo@correo.com";
-  const DEMO_PASSWORD = "123456";
 
   if (!email || !password) {
-    return res.status(400).json({ success: false, message: "Faltan credenciales" });
+    return res
+      .status(400)
+      .json({ message: "Email y contraseña son obligatorios" });
   }
 
-  if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-    return res.json({ success: true, message: "Has iniciado sesión" });
-  } else {
-    return res.status(401).json({ success: false, message: "Credenciales inválidas" });
+  // Validar credenciales
+  if (email === VALID_USER.email && password === VALID_USER.password) {
+
+    return res.status(200).json({
+      message: "Login exitoso",
+      user: { email },
+      token: "token-falso-de-ejemplo"
+    });
   }
+
+  return res.status(401).json({ message: "Credenciales inválidas" });
 });
 
 export default router;
